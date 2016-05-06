@@ -7,6 +7,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <fcntl.h>
+#include <vector>
 #include <opencv2/opencv.hpp>
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
@@ -93,6 +94,10 @@ bool Gnuplot::initialize()
     this->xLabel = new QString("xLabel");
     this->yLabel = new QString("yLabel");
 
+    this->datasetMode = false;
+    this->dataset = new QList<QList<double>*>;
+    this->datasetDim = 2;
+
     return true;
 }
 
@@ -103,7 +108,7 @@ bool Gnuplot::sendMessage()
     cout << "senden..." << endl;
 
     fprintf(this->gnuplotInput, "set terminal png size %d,%d\n", this->width(), this->height());
-    //fprintf(this->gnuplotInput, "set output \"test.png\"");
+
     fprintf(this->gnuplotInput, "set title '%s'\n", this->title->toLatin1().data());
     fprintf(this->gnuplotInput, "set xrange [%d:%d]\n", this->xRange[0], this->xRange[1]);
     fprintf(this->gnuplotInput, "set yrange [%d:%d]\n", this->yRange[0], this->yRange[1]);
@@ -114,7 +119,20 @@ bool Gnuplot::sendMessage()
     {
         fprintf(this->gnuplotInput, (char*) this->commandList->at(i)->toLatin1().data());
     }
-    //fprintf(this->gnuplotInput, "plot '-' w boxes title 'Winkelhistogramm'\n");
+
+    if (datasetMode)
+    {
+        fprintf(this->gnuplotInput, "plot '-' u 1:2 w l title 'Punkte'\n");
+        for (int i = 0; i < this->dataset->size(); i++)
+        {
+            for (int j = 0; j < this->dataset->at(i)->size(); j++)
+            {
+                fprintf(this->gnuplotInput, "%f ", this->dataset->at(i)->at(j));
+            }
+            fprintf(this->gnuplotInput, "\n");
+        }
+        fprintf(this->gnuplotInput, "e\n");
+    }
 
     //fprintf(this->gnuplotInput, "plot sin(x)\n");
     fflush(this->gnuplotInput);
@@ -251,6 +269,24 @@ void Gnuplot::setYRange(int lowerBound, int upperBound)
 void Gnuplot::setTitle(QString *title)
 {
     this->title = title;
+}
+
+void Gnuplot::setDatasetMode(bool mode)
+{
+    this->datasetMode = mode;
+}
+
+void Gnuplot::setDatasetDim(int dim)
+{
+    if (dim <= 3 && dim >= 0)
+    {
+        this->datasetDim = dim;
+    }
+}
+
+void Gnuplot::addDataset(QList<double>* data)
+{
+    this->dataset->append(data);
 }
 
 

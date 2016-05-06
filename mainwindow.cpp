@@ -23,7 +23,25 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pushButton_clicked()
 {
+    ui->gnuplot->setDatasetMode(true);
 
+    QList<double>* l;
+    l = new QList<double>();
+    l->append(1.0);
+    l->append(0.3);
+    ui->gnuplot->addDataset(l);
+    l = new QList<double>();
+    l->append(-0.2);
+    l->append(-0.3);
+    ui->gnuplot->addDataset(l);
+    l = new QList<double>();
+    l->append(0.5);
+    l->append(0.5);
+    ui->gnuplot->addDataset(l);
+    l = new QList<double>();
+    l->append(-1.0);
+    l->append(-0.3);
+    ui->gnuplot->addDataset(l);
 }
 
 

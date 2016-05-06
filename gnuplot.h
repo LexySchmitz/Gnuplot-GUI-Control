@@ -43,6 +43,10 @@ private:
     QString* xLabel;
     QString* yLabel;
 
+    bool datasetMode;
+    int datasetDim;
+    QList<QList<double>*>* dataset;
+
 
 private:
     bool initialize();
@@ -65,7 +69,9 @@ public:
     void setYRange(int lowerBound, int upperBound);
     void setXLabel(QString* xLabel);
     void setYLabel(QString* yLabel);
-
+    void setDatasetMode(bool mode);
+    void setDatasetDim(int dim);
+    void addDataset(QList<double>* data);
 };
 
 #endif // GNUPLOT_H

@@ -10,6 +10,7 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
 
 #define READ_PORT 0
@@ -89,7 +90,8 @@ bool Gnuplot::sendMessage()
 {
     cout << "senden..." << endl;
 
-    fprintf(this->gnuplotInput, "set terminal png size %d,%d x000000\n", this->width(), this->height());
+    fprintf(this->gnuplotInput, "set terminal png size %d,%d\n", this->width(), this->height());
+    //fprintf(this->gnuplotInput, "set output \"test.png\"");
     fprintf(this->gnuplotInput, "set title 'TITEL'\n");
     fprintf(this->gnuplotInput, "set xrange [-90:90]\n");
     fprintf(this->gnuplotInput, "set yrange [-4:4]\n");
@@ -140,7 +142,7 @@ bool Gnuplot::receiveMessage()
 
         Mat a = imdecode(pngbytes, CV_LOAD_IMAGE_COLOR);
 
-        this->setPixmap(QPixmap(QPixmap::fromImage(QImage(a.data, a.cols, a.rows, QImage::Format_RGB888))));
+        this->setPixmap(QPixmap(QPixmap::fromImage(QImage((unsigned char*) a.data, a.cols, a.rows, a.cols * 3, QImage::Format_RGB888))));
 
         success = true;
         this->failed = 0;

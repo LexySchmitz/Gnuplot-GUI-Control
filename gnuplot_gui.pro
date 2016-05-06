@@ -8,16 +8,16 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = gnuplot_gui
+TARGET   = gnuplot_gui_control
 TEMPLATE = app
 
 
-SOURCES += main.cpp\
-        mainwindow.cpp \
-        gnuplot.cpp
+SOURCES  += main.cpp \
+            mainwindow.cpp \
+            gnuplot.cpp
 
 HEADERS  += mainwindow.h \
-         gnuplot.h
+            gnuplot.h
 
 FORMS    += mainwindow.ui
 

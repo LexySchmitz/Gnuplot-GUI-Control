@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "gnuplot.h"
+#include <QString>
 
 namespace Ui {
     class MainWindow;
@@ -22,6 +23,8 @@ private slots:
     void on_pushButton_2_clicked();
 
     void on_pushButton_3_clicked();
+
+    void on_sendButton_clicked();
 
 private:
     Ui::MainWindow *ui;

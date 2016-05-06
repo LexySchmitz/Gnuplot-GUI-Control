@@ -23,15 +23,17 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pushButton_clicked()
 {
-    ui->gnuplot->plot();
+
 }
+
+
 
 void MainWindow::on_pushButton_2_clicked()
 {
-
+    ui->gnuplot->addCommand(new QString("plot sin(1/x)"));
 }
 
-void MainWindow::on_pushButton_3_clicked()
+void MainWindow::on_sendButton_clicked()
 {
-
+    ui->gnuplot->plot();
 }

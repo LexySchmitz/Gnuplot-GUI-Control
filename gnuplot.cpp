@@ -81,6 +81,8 @@ bool Gnuplot::initialize()
 
     this->failed = 0;
 
+    this->commandList = new QList<QString*>();
+
     return true;
 }
 
@@ -98,9 +100,13 @@ bool Gnuplot::sendMessage()
     fprintf(this->gnuplotInput, "set xlabel 'Winkel'\n");
     fprintf(this->gnuplotInput, "set ylabel 'Haeufigkeit'\n");
 
+    for (int i = 0; i < this->commandList->size(); i++)
+    {
+        fprintf(this->gnuplotInput, (char*) this->commandList->at(i)->toLatin1().data());
+    }
     //fprintf(this->gnuplotInput, "plot '-' w boxes title 'Winkelhistogramm'\n");
 
-    fprintf(this->gnuplotInput, "plot sin(x)\n");
+    //fprintf(this->gnuplotInput, "plot sin(x)\n");
     fflush(this->gnuplotInput);
 
     return true;
@@ -200,6 +206,14 @@ void Gnuplot::plot()
 {
     state = SENDING;
     this->timer->start(50);
+}
+
+
+
+void Gnuplot::addCommand(QString* command)
+{
+    command->append("\n");
+    this->commandList->push_back(command);
 }
 
 

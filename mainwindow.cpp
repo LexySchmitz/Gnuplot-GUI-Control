@@ -37,3 +37,5 @@ void MainWindow::on_sendButton_clicked()
 {
     ui->gnuplot->plot();
 }
+
+

@@ -83,6 +83,16 @@ bool Gnuplot::initialize()
 
     this->commandList = new QList<QString*>();
 
+    this->title = new QString("Titel");
+
+    this->xRange[0] = -1;
+    this->xRange[1] = 1;
+    this->yRange[0] = -1;
+    this->yRange[1] = 1;
+
+    this->xLabel = new QString("xLabel");
+    this->yLabel = new QString("yLabel");
+
     return true;
 }
 
@@ -94,11 +104,11 @@ bool Gnuplot::sendMessage()
 
     fprintf(this->gnuplotInput, "set terminal png size %d,%d\n", this->width(), this->height());
     //fprintf(this->gnuplotInput, "set output \"test.png\"");
-    fprintf(this->gnuplotInput, "set title 'TITEL'\n");
-    fprintf(this->gnuplotInput, "set xrange [-90:90]\n");
-    fprintf(this->gnuplotInput, "set yrange [-4:4]\n");
-    fprintf(this->gnuplotInput, "set xlabel 'Winkel'\n");
-    fprintf(this->gnuplotInput, "set ylabel 'Haeufigkeit'\n");
+    fprintf(this->gnuplotInput, "set title '%s'\n", this->title->toLatin1().data());
+    fprintf(this->gnuplotInput, "set xrange [%d:%d]\n", this->xRange[0], this->xRange[1]);
+    fprintf(this->gnuplotInput, "set yrange [%d:%d]\n", this->yRange[0], this->yRange[1]);
+    fprintf(this->gnuplotInput, "set xlabel '%s'\n", this->xLabel->toLatin1().data());
+    fprintf(this->gnuplotInput, "set ylabel '%s'\n", this->yLabel->toLatin1().data());
 
     for (int i = 0; i < this->commandList->size(); i++)
     {
@@ -216,5 +226,31 @@ void Gnuplot::addCommand(QString* command)
     this->commandList->push_back(command);
 }
 
+void Gnuplot::setXLabel(QString *xLabel)
+{
+    this->xLabel = xLabel;
+}
+
+void Gnuplot::setYLabel(QString *yLabel)
+{
+    this->yLabel = yLabel;
+}
+
+void Gnuplot::setXRange(int lowerBound, int upperBound)
+{
+    this->xRange[0] = lowerBound;
+    this->xRange[1] = upperBound;
+}
+
+void Gnuplot::setYRange(int lowerBound, int upperBound)
+{
+    this->yRange[0] = lowerBound;
+    this->yRange[1] = upperBound;
+}
+
+void Gnuplot::setTitle(QString *title)
+{
+    this->title = title;
+}
 
 

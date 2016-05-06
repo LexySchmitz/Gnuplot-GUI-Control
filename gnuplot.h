@@ -37,6 +37,12 @@ private:
 
     QList<QString*>* commandList;
 
+    QString* title;
+    int xRange[2];
+    int yRange[2];
+    QString* xLabel;
+    QString* yLabel;
+
 
 private:
     bool initialize();
@@ -54,6 +60,11 @@ public:
     int getProcess();
     void plot();
     void addCommand(QString* command);
+    void setTitle(QString* title);
+    void setXRange(int lowerBound, int upperBound);
+    void setYRange(int lowerBound, int upperBound);
+    void setXLabel(QString* xLabel);
+    void setYLabel(QString* yLabel);
 
 };
 

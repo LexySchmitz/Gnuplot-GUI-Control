@@ -40,12 +40,16 @@ private:
     QString* title;
     int xRange[2];
     int yRange[2];
+    int zRange[2];
     QString* xLabel;
     QString* yLabel;
+    QString* zLabel;
 
+    vector<FILE*>* dataPipes;
     bool datasetMode;
     int datasetDim;
-    QList<QList<double>*>* dataset;
+    vector<vector<vector<double>*>*>* dataset;
+    vector<int>* setSize;
 
 
 private:
@@ -67,11 +71,14 @@ public:
     void setTitle(QString* title);
     void setXRange(int lowerBound, int upperBound);
     void setYRange(int lowerBound, int upperBound);
+    void setZRange(int lowerBound, int upperBound);
     void setXLabel(QString* xLabel);
     void setYLabel(QString* yLabel);
+    void setZLabel(QString* zLabel);
     void setDatasetMode(bool mode);
     void setDatasetDim(int dim);
-    void addDataset(QList<double>* data);
+    void addDataset(int setNumber, double* data);
+    void addSet();
 };
 
 #endif // GNUPLOT_H

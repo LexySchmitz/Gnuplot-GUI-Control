@@ -86,17 +86,20 @@ bool Gnuplot::initialize()
 
     this->title = new QString("Titel");
 
-    this->xRange[0] = -1;
-    this->xRange[1] = 1;
-    this->yRange[0] = -1;
-    this->yRange[1] = 1;
+    this->xRange[0] = -10;
+    this->xRange[1] = 10;
+    this->yRange[0] = -10;
+    this->yRange[1] = 10;
+    this->zRange[0] = -10;
+    this->zRange[1] = 10;
 
     this->xLabel = new QString("xLabel");
     this->yLabel = new QString("yLabel");
+    this->zLabel = new QString("zLabel");
 
     this->datasetMode = false;
-    this->dataset = new QList<QList<double>*>;
     this->datasetDim = 2;
+    this->dataset = new vector<vector<vector<double>*>*>();
 
     return true;
 }
@@ -107,35 +110,84 @@ bool Gnuplot::sendMessage()
 {
     cout << "senden..." << endl;
 
-    fprintf(this->gnuplotInput, "set terminal png size %d,%d\n", this->width(), this->height());
+    fprintf(this->gnuplotInput, "set terminal png size %d, %d\n", this->width(), this->height());
 
     fprintf(this->gnuplotInput, "set title '%s'\n", this->title->toLatin1().data());
     fprintf(this->gnuplotInput, "set xrange [%d:%d]\n", this->xRange[0], this->xRange[1]);
     fprintf(this->gnuplotInput, "set yrange [%d:%d]\n", this->yRange[0], this->yRange[1]);
+    fprintf(this->gnuplotInput, "set zrange [%d:%d]\n", this->zRange[0], this->zRange[1]);
     fprintf(this->gnuplotInput, "set xlabel '%s'\n", this->xLabel->toLatin1().data());
     fprintf(this->gnuplotInput, "set ylabel '%s'\n", this->yLabel->toLatin1().data());
+    fprintf(this->gnuplotInput, "set zlabel '%s'\n", this->zLabel->toLatin1().data());
+
+    fprintf(this->gnuplotInput, "set view 20,50\n");
+
 
     for (int i = 0; i < this->commandList->size(); i++)
     {
         fprintf(this->gnuplotInput, (char*) this->commandList->at(i)->toLatin1().data());
     }
 
+
     if (datasetMode)
     {
-        fprintf(this->gnuplotInput, "plot '-' u 1:2 w l title 'Punkte'\n");
-        for (int i = 0; i < this->dataset->size(); i++)
+        if (datasetDim == 2)
         {
-            for (int j = 0; j < this->dataset->at(i)->size(); j++)
-            {
-                fprintf(this->gnuplotInput, "%f ", this->dataset->at(i)->at(j));
-            }
-            fprintf(this->gnuplotInput, "\n");
+            fprintf(this->gnuplotInput, "plot ");
+            printf("plot ");
         }
-        fprintf(this->gnuplotInput, "e\n");
+        else if (datasetDim == 3)
+        {
+            fprintf(this->gnuplotInput, "splot ");
+            printf("splot ");
+        }
+
+        for (int k = 0; k < this->dataset->size(); k++)
+        {
+            fprintf(this->gnuplotInput, "'-' using ");
+            printf("'-' using ");
+
+            if (datasetDim == 2)
+            {
+                fprintf(this->gnuplotInput, "1:2 ");
+                printf("1:2 ");
+            }
+            else if (datasetDim == 3)
+            {
+                fprintf(this->gnuplotInput, "1:2:3 ");
+                printf("1:2:3 ");
+            }
+
+            fprintf(this->gnuplotInput, " with lines title 'Punkte %d'", k);
+            printf(" with lines title 'Punkte %d'", k);
+
+            if (k < this->dataset->size() - 1){
+                fprintf(this->gnuplotInput, ", ");
+                printf(", ");
+            }
+        }
+        fprintf(this->gnuplotInput, "\n");
+        printf("\n");
+
+        for (int k = 0; k < this->dataset->size(); k++)
+        {
+            for(int i = 0; i < this->dataset->at(k)->size(); i++)
+            {
+                for (int j = 0; j < this->dataset->at(k)->at(i)->size(); j++)
+                {
+                    fprintf(this->gnuplotInput, "%f\t", this->dataset->at(k)->at(i)->at(j));
+                    printf("%f\t", this->dataset->at(k)->at(i)->at(j));
+                }
+                fprintf(this->gnuplotInput, "\n");
+                printf("\n");
+            }
+            fprintf(this->gnuplotInput, "e\n");
+            printf("e\n");
+        }
     }
 
-    //fprintf(this->gnuplotInput, "plot sin(x)\n");
     fflush(this->gnuplotInput);
+    fflush(stdout);
 
     return true;
 }
@@ -244,14 +296,19 @@ void Gnuplot::addCommand(QString* command)
     this->commandList->push_back(command);
 }
 
-void Gnuplot::setXLabel(QString *xLabel)
+void Gnuplot::setXLabel(QString* xLabel)
 {
     this->xLabel = xLabel;
 }
 
-void Gnuplot::setYLabel(QString *yLabel)
+void Gnuplot::setYLabel(QString* yLabel)
 {
     this->yLabel = yLabel;
+}
+
+void Gnuplot::setZLabel(QString* zLabel)
+{
+    this->zLabel = zLabel;
 }
 
 void Gnuplot::setXRange(int lowerBound, int upperBound)
@@ -266,6 +323,12 @@ void Gnuplot::setYRange(int lowerBound, int upperBound)
     this->yRange[1] = upperBound;
 }
 
+void Gnuplot::setZRange(int lowerBound, int upperBound)
+{
+    this->zRange[0] = lowerBound;
+    this->zRange[1] = upperBound;
+}
+
 void Gnuplot::setTitle(QString *title)
 {
     this->title = title;
@@ -278,15 +341,28 @@ void Gnuplot::setDatasetMode(bool mode)
 
 void Gnuplot::setDatasetDim(int dim)
 {
-    if (dim <= 3 && dim >= 0)
+    if (dim <= 3 && dim >= 2)
     {
         this->datasetDim = dim;
     }
 }
 
-void Gnuplot::addDataset(QList<double>* data)
+void Gnuplot::addSet()
 {
-    this->dataset->append(data);
+    vector<vector<double>*>* newSet = new vector<vector<double>*>();
+    this->dataset->push_back(newSet);
 }
+
+void Gnuplot::addDataset(int setNumber, double* data)
+{
+    vector<double>* newSet = new vector<double>();
+    for (int i = 0; i < this->datasetDim; i++)
+    {
+        newSet->push_back(data[i]);
+    }
+    this->dataset->at(setNumber)->push_back(newSet);
+}
+
+
 
 

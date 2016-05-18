@@ -24,24 +24,55 @@ MainWindow::~MainWindow()
 void MainWindow::on_pushButton_clicked()
 {
     ui->gnuplot->setDatasetMode(true);
+    ui->gnuplot->setDatasetDim(3);
 
-    QList<double>* l;
-    l = new QList<double>();
-    l->append(1.0);
-    l->append(0.3);
-    ui->gnuplot->addDataset(l);
-    l = new QList<double>();
-    l->append(-0.2);
-    l->append(-0.3);
-    ui->gnuplot->addDataset(l);
-    l = new QList<double>();
-    l->append(0.5);
-    l->append(0.5);
-    ui->gnuplot->addDataset(l);
-    l = new QList<double>();
-    l->append(-1.0);
-    l->append(-0.3);
-    ui->gnuplot->addDataset(l);
+    ui->gnuplot->addSet();
+
+    cout << "test" << endl;
+
+    double data[3];
+    data[0] = -2.5;
+    data[1] = 3.5;
+    data[2] = 1.0;
+    ui->gnuplot->addDataset(0, data);
+    data[0] = 1.5;
+    data[1] = 5.5;
+    data[2] = 2.0;
+    ui->gnuplot->addDataset(0, data);
+    data[0] = 4.5;
+    data[1] = -7.5;
+    data[2] = -1.0;
+    ui->gnuplot->addDataset(0, data);
+    data[0] = 2.5;
+    data[1] = 3.2;
+    data[2] = -2.0;
+    ui->gnuplot->addDataset(0, data);
+    data[0] = -7.5;
+    data[1] = -9.2;
+    data[2] = -3.0;
+    ui->gnuplot->addDataset(0, data);
+
+    ui->gnuplot->addSet();
+    data[0] = -1.5;
+    data[1] = 2.5;
+    data[2] = -3.0;
+    ui->gnuplot->addDataset(1, data);
+    data[0] = 0.5;
+    data[1] = 3.5;
+    data[2] = -2.0;
+    ui->gnuplot->addDataset(1, data);
+    data[0] = 5.5;
+    data[1] = -8.5;
+    data[2] = -1.0;
+    ui->gnuplot->addDataset(1, data);
+    data[0] = 3.5;
+    data[1] = 2.2;
+    data[2] = 0.0;
+    ui->gnuplot->addDataset(1, data);
+    data[0] = -9.5;
+    data[1] = -4.2;
+    data[2] = 1.0;
+    ui->gnuplot->addDataset(1, data);
 }
 
 

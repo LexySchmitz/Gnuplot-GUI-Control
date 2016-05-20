@@ -2,6 +2,7 @@
 #define GRAPH_H
 
 #include <vector>
+#include <QString>
 
 using namespace std;
 
@@ -12,6 +13,9 @@ private:
     vector<vector<double*>*>* graph;
     int datasetDim;
 
+    QString* title;
+
+
 public:
     Graph(int dim);
     void addSegment();
@@ -21,6 +25,10 @@ public:
     int getDatasetDim();
     int getNumberOfDatasets(int segment);
     int getNumberOfSegments();
+    void setTitle(QString* title);
+    void setTitle(QString title);
+    void setTitle(char* title);
+    char* getTitle();
 
 };
 

@@ -160,8 +160,8 @@ bool Gnuplot::sendMessage()
                 printf("1:2:3 ");
             }
 
-            fprintf(this->gnuplotInput, " with lines title 'Punkte %d'", k);
-            printf(" with lines title 'Punkte %d'", k);
+            fprintf(this->gnuplotInput, " with lines title '%s'", this->graphset->at(k)->getTitle());
+            printf(" with lines title '%s'", this->graphset->at(k)->getTitle());
 
             if (k < this->graphset->size() - 1){
                 fprintf(this->gnuplotInput, ", ");
@@ -341,23 +341,68 @@ void Gnuplot::plot(double zoomLevel)
 
 void Gnuplot::addCommand(QString* command)
 {
-    command->append("\n");
-    this->commandList->push_back(command);
+    QString* cmd = new QString(*command);
+    cmd->append("\n");
+    this->commandList->push_back(cmd);
+}
+
+void Gnuplot::addCommand(QString command)
+{
+    QString* cmd = new QString(command);
+    cmd->append("\n");
+    this->commandList->push_back(cmd);
+}
+
+void Gnuplot::addCommand(char* command)
+{
+    QString* cmd = new QString(command);
+    cmd->append("\n");
+    this->commandList->push_back(cmd);
 }
 
 void Gnuplot::setXLabel(QString* xLabel)
 {
-    this->xLabel = xLabel;
+    this->xLabel = new QString(*xLabel);
+}
+
+void Gnuplot::setXLabel(QString xLabel)
+{
+    this->xLabel = new QString(xLabel);
+}
+
+void Gnuplot::setXLabel(char* xLabel)
+{
+    this->xLabel = new QString(xLabel);
 }
 
 void Gnuplot::setYLabel(QString* yLabel)
 {
-    this->yLabel = yLabel;
+    this->yLabel = new QString(*yLabel);
+}
+
+void Gnuplot::setYLabel(QString yLabel)
+{
+    this->yLabel = new QString(yLabel);
+}
+
+void Gnuplot::setYLabel(char* yLabel)
+{
+    this->yLabel = new QString(yLabel);
 }
 
 void Gnuplot::setZLabel(QString* zLabel)
 {
-    this->zLabel = zLabel;
+    this->zLabel = new QString(*zLabel);
+}
+
+void Gnuplot::setZLabel(QString zLabel)
+{
+    this->zLabel = new QString(zLabel);
+}
+
+void Gnuplot::setZLabel(char* zLabel)
+{
+    this->zLabel = new QString(zLabel);
 }
 
 void Gnuplot::setXRange(int lowerBound, int upperBound)
@@ -380,7 +425,17 @@ void Gnuplot::setZRange(int lowerBound, int upperBound)
 
 void Gnuplot::setTitle(QString *title)
 {
-    this->title = title;
+    this->title = new QString(*title);
+}
+
+void Gnuplot::setTitle(QString title)
+{
+    this->title = new QString(title);
+}
+
+void Gnuplot::setTitle(char *title)
+{
+    this->title = new QString(title);
 }
 
 void Gnuplot::setDatasetMode(bool mode)

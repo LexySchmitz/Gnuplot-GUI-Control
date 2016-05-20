@@ -51,6 +51,26 @@ double Graph::getValue(int segment, int dataset, int dim)
     return this->graph->at(segment)->at(dataset)[dim];
 }
 
+void Graph::setTitle(QString* title)
+{
+    this->title = new QString(*title);
+}
+
+void Graph::setTitle(QString title)
+{
+    this->title = new QString(title);
+}
+
+void Graph::setTitle(char* title)
+{
+    this->title = new QString(title);
+}
+
+char* Graph::getTitle()
+{
+    return this->title->toLatin1().data();
+}
+
 
 
 

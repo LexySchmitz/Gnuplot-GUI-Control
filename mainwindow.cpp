@@ -150,10 +150,3 @@ void MainWindow::on_horizontalSlider_actionTriggered(int action)
     ui->gnuplot->plot(ui->horizontalSlider->value(), ui->verticalSlider->value());
 }
 
-void MainWindow::on_zoomSlider_actionTriggered(int action)
-{
-    double zoomLevel = ui->zoomSlider->value() > 0.0
-                    ? ui->zoomSlider->value() + 1.0
-                    : 1.0 / abs(ui->zoomSlider->value() + 1.0);
-    ui->gnuplot->plot(zoomLevel);
-}

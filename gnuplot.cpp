@@ -131,14 +131,14 @@ bool Gnuplot::sendMessage()
     }
 
 
-    if (datasetMode)
+    if (this->datasetMode)
     {
-        if (datasetDim == 2)
+        if (this->datasetDim == 2)
         {
             fprintf(this->gnuplotInput, "plot ");
             printf("plot ");
         }
-        else if (datasetDim == 3)
+        else if (this->datasetDim == 3)
         {
             fprintf(this->gnuplotInput, "splot ");
             printf("splot ");
@@ -149,12 +149,12 @@ bool Gnuplot::sendMessage()
             fprintf(this->gnuplotInput, "'-' using ");
             printf("'-' using ");
 
-            if (datasetDim == 2)
+            if (this->datasetDim == 2)
             {
                 fprintf(this->gnuplotInput, "1:2 ");
                 printf("1:2 ");
             }
-            else if (datasetDim == 3)
+            else if (this->datasetDim == 3)
             {
                 fprintf(this->gnuplotInput, "1:2:3 ");
                 printf("1:2:3 ");
@@ -181,14 +181,14 @@ bool Gnuplot::sendMessage()
                 for (int k = 0; k < this->graphset->at(i)->getNumberOfDatasets(j); k++)
                 {
                     // Dimensionen
-                    if (datasetDim == 2)
+                    if (this->datasetDim == 2)
                     {
                         fprintf(this->gnuplotInput, "%f\t", this->graphset->at(i)->getValue(j, k, 0));
                         printf("%f\t", this->graphset->at(i)->getValue(j, k, 0));
                         fprintf(this->gnuplotInput, "%f\t", this->graphset->at(i)->getValue(j, k, 1));
                         printf("%f\t", this->graphset->at(i)->getValue(j, k, 1));
                     }
-                    else if (datasetDim == 3)
+                    else if (this->datasetDim == 3)
                     {
                         fprintf(this->gnuplotInput, "%f\t", this->graphset->at(i)->getValue(j, k, 0));
                         printf("%f\t", this->graphset->at(i)->getValue(j, k, 0));
@@ -206,7 +206,6 @@ bool Gnuplot::sendMessage()
             fprintf(this->gnuplotInput, "e\n");
             printf("e\n");
         }
-
     }
 
     fflush(this->gnuplotInput);

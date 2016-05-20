@@ -10,6 +10,9 @@
 #include <unistd.h>
 #include <opencv2/opencv.hpp>
 #include <iostream>
+#include <vector>
+
+#include "graph.h"
 
 using namespace std;
 using namespace cv;
@@ -45,12 +48,13 @@ private:
     QString* yLabel;
     QString* zLabel;
 
-    vector<FILE*>* dataPipes;
+    int hAngle;
+    int vAngle;
+    int zoomLevel;
+
     bool datasetMode;
     int datasetDim;
-    vector<vector<vector<double>*>*>* dataset;
-    vector<int>* setSize;
-
+    vector<Graph*>* graphset;
 
 private:
     bool initialize();
@@ -67,6 +71,8 @@ public:
     ~Gnuplot();
     int getProcess();
     void plot();
+    void plot(int hAngle, int vAngle);
+    void plot(double zoomLevel);
     void addCommand(QString* command);
     void setTitle(QString* title);
     void setXRange(int lowerBound, int upperBound);
@@ -77,8 +83,7 @@ public:
     void setZLabel(QString* zLabel);
     void setDatasetMode(bool mode);
     void setDatasetDim(int dim);
-    void addDataset(int setNumber, double* data);
-    void addSet();
+    void addGraph(Graph* graph);
 };
 
 #endif // GNUPLOT_H

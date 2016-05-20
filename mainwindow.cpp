@@ -26,53 +26,104 @@ void MainWindow::on_pushButton_clicked()
     ui->gnuplot->setDatasetMode(true);
     ui->gnuplot->setDatasetDim(3);
 
-    ui->gnuplot->addSet();
+    Graph* newGraph;
+    double data[3];
 
     cout << "test" << endl;
 
-    double data[3];
+    newGraph = new Graph(3);
+    newGraph->addSegment();
     data[0] = -2.5;
     data[1] = 3.5;
     data[2] = 1.0;
-    ui->gnuplot->addDataset(0, data);
+    newGraph->addDataset(0, data);
     data[0] = 1.5;
     data[1] = 5.5;
     data[2] = 2.0;
-    ui->gnuplot->addDataset(0, data);
+    newGraph->addDataset(0, data);
     data[0] = 4.5;
     data[1] = -7.5;
     data[2] = -1.0;
-    ui->gnuplot->addDataset(0, data);
+    newGraph->addDataset(0, data);
     data[0] = 2.5;
     data[1] = 3.2;
     data[2] = -2.0;
-    ui->gnuplot->addDataset(0, data);
+    newGraph->addDataset(0, data);
     data[0] = -7.5;
     data[1] = -9.2;
     data[2] = -3.0;
-    ui->gnuplot->addDataset(0, data);
+    newGraph->addDataset(0, data);
 
-    ui->gnuplot->addSet();
-    data[0] = -1.5;
-    data[1] = 2.5;
-    data[2] = -3.0;
-    ui->gnuplot->addDataset(1, data);
-    data[0] = 0.5;
-    data[1] = 3.5;
-    data[2] = -2.0;
-    ui->gnuplot->addDataset(1, data);
-    data[0] = 5.5;
-    data[1] = -8.5;
+    newGraph->addSegment();
+    data[0] = 2.5;
+    data[1] = -3.5;
     data[2] = -1.0;
-    ui->gnuplot->addDataset(1, data);
-    data[0] = 3.5;
-    data[1] = 2.2;
-    data[2] = 0.0;
-    ui->gnuplot->addDataset(1, data);
-    data[0] = -9.5;
-    data[1] = -4.2;
+    newGraph->addDataset(1, data);
+    data[0] = -1.5;
+    data[1] = -5.5;
+    data[2] = -2.0;
+    newGraph->addDataset(1, data);
+    data[0] = -4.5;
+    data[1] = 7.5;
     data[2] = 1.0;
-    ui->gnuplot->addDataset(1, data);
+    newGraph->addDataset(1, data);
+    data[0] = -2.5;
+    data[1] = -3.2;
+    data[2] = 2.0;
+    newGraph->addDataset(1, data);
+    data[0] = 7.5;
+    data[1] = 9.2;
+    data[2] = 3.0;
+    newGraph->addDataset(1, data);
+
+    ui->gnuplot->addGraph(newGraph);
+
+    newGraph = new Graph(3);
+    newGraph->addSegment();
+    data[0] = 3.5;
+    data[1] = 2.5;
+    data[2] = 1.0;
+    newGraph->addDataset(0, data);
+    data[0] = 2.3;
+    data[1] = 1.2;
+    data[2] = 2.7;
+    newGraph->addDataset(0, data);
+    data[0] = 7.5;
+    data[1] = -2.3;
+    data[2] = -1.2;
+    newGraph->addDataset(0, data);
+    data[0] = 1.3;
+    data[1] = 3.0;
+    data[2] = -2.5;
+    newGraph->addDataset(0, data);
+    data[0] = -9.2;
+    data[1] = -3.2;
+    data[2] = -8.0;
+    newGraph->addDataset(0, data);
+
+    newGraph->addSegment();
+    data[0] = -3.5;
+    data[1] = -2.5;
+    data[2] = -1.0;
+    newGraph->addDataset(1, data);
+    data[0] = -2.3;
+    data[1] = -1.2;
+    data[2] = -2.7;
+    newGraph->addDataset(1, data);
+    data[0] = -7.5;
+    data[1] = 2.3;
+    data[2] = 1.2;
+    newGraph->addDataset(1, data);
+    data[0] = -1.3;
+    data[1] = -3.0;
+    data[2] = 2.5;
+    newGraph->addDataset(1, data);
+    data[0] = 9.2;
+    data[1] = 3.2;
+    data[2] = 8.0;
+    newGraph->addDataset(1, data);
+
+    ui->gnuplot->addGraph(newGraph);
 }
 
 
@@ -88,3 +139,21 @@ void MainWindow::on_sendButton_clicked()
 }
 
 
+
+void MainWindow::on_verticalSlider_actionTriggered(int action)
+{
+    ui->gnuplot->plot(ui->horizontalSlider->value(), ui->verticalSlider->value());
+}
+
+void MainWindow::on_horizontalSlider_actionTriggered(int action)
+{
+    ui->gnuplot->plot(ui->horizontalSlider->value(), ui->verticalSlider->value());
+}
+
+void MainWindow::on_zoomSlider_actionTriggered(int action)
+{
+    double zoomLevel = ui->zoomSlider->value() > 0.0
+                    ? ui->zoomSlider->value() + 1.0
+                    : 1.0 / abs(ui->zoomSlider->value() + 1.0);
+    ui->gnuplot->plot(zoomLevel);
+}

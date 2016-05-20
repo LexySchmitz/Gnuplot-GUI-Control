@@ -26,6 +26,12 @@ private slots:
 
     void on_sendButton_clicked();
 
+    void on_verticalSlider_actionTriggered(int action);
+
+    void on_horizontalSlider_actionTriggered(int action);
+
+    void on_zoomSlider_actionTriggered(int action);
+
 private:
     Ui::MainWindow *ui;
     //Gnuplot* gnuplot;

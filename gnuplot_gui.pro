@@ -14,10 +14,12 @@ TEMPLATE = app
 
 SOURCES  += main.cpp \
             mainwindow.cpp \
-            gnuplot.cpp
+            gnuplot.cpp \
+    graph.cpp
 
 HEADERS  += mainwindow.h \
-            gnuplot.h
+            gnuplot.h \
+    graph.h
 
 FORMS    += mainwindow.ui
 

@@ -7,7 +7,6 @@
 #include <iostream>
 #include <cstdlib>
 #include <fcntl.h>
-#include <vector>
 #include <opencv2/opencv.hpp>
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
@@ -97,9 +96,12 @@ bool Gnuplot::initialize()
     this->yLabel = new QString("yLabel");
     this->zLabel = new QString("zLabel");
 
+    this->vAngle = 0;
+    this->hAngle = 0;
+    this->zoomLevel = 1.0;
+
     this->datasetMode = false;
-    this->datasetDim = 2;
-    this->dataset = new vector<vector<vector<double>*>*>();
+    this->graphset = new vector<Graph*>();
 
     return true;
 }
@@ -113,14 +115,14 @@ bool Gnuplot::sendMessage()
     fprintf(this->gnuplotInput, "set terminal png size %d, %d\n", this->width(), this->height());
 
     fprintf(this->gnuplotInput, "set title '%s'\n", this->title->toLatin1().data());
-    fprintf(this->gnuplotInput, "set xrange [%d:%d]\n", this->xRange[0], this->xRange[1]);
-    fprintf(this->gnuplotInput, "set yrange [%d:%d]\n", this->yRange[0], this->yRange[1]);
-    fprintf(this->gnuplotInput, "set zrange [%d:%d]\n", this->zRange[0], this->zRange[1]);
+    fprintf(this->gnuplotInput, "set xrange [%d:%d]\n", this->xRange[0] / this->zoomLevel, this->xRange[1] / this->zoomLevel);
+    fprintf(this->gnuplotInput, "set yrange [%d:%d]\n", this->yRange[0] / this->zoomLevel, this->yRange[1] / this->zoomLevel);
+    fprintf(this->gnuplotInput, "set zrange [%d:%d]\n", this->zRange[0] / this->zoomLevel, this->zRange[1] / this->zoomLevel);
     fprintf(this->gnuplotInput, "set xlabel '%s'\n", this->xLabel->toLatin1().data());
     fprintf(this->gnuplotInput, "set ylabel '%s'\n", this->yLabel->toLatin1().data());
     fprintf(this->gnuplotInput, "set zlabel '%s'\n", this->zLabel->toLatin1().data());
 
-    fprintf(this->gnuplotInput, "set view 20,50\n");
+    fprintf(this->gnuplotInput, "set view %d,%d\n", this->vAngle, this->hAngle);
 
 
     for (int i = 0; i < this->commandList->size(); i++)
@@ -142,7 +144,7 @@ bool Gnuplot::sendMessage()
             printf("splot ");
         }
 
-        for (int k = 0; k < this->dataset->size(); k++)
+        for (int k = 0; k < this->graphset->size(); k++)
         {
             fprintf(this->gnuplotInput, "'-' using ");
             printf("'-' using ");
@@ -161,7 +163,7 @@ bool Gnuplot::sendMessage()
             fprintf(this->gnuplotInput, " with lines title 'Punkte %d'", k);
             printf(" with lines title 'Punkte %d'", k);
 
-            if (k < this->dataset->size() - 1){
+            if (k < this->graphset->size() - 1){
                 fprintf(this->gnuplotInput, ", ");
                 printf(", ");
             }
@@ -169,14 +171,34 @@ bool Gnuplot::sendMessage()
         fprintf(this->gnuplotInput, "\n");
         printf("\n");
 
-        for (int k = 0; k < this->dataset->size(); k++)
+        // Graphen
+        for (int i = 0; i < this->graphset->size(); i++)
         {
-            for(int i = 0; i < this->dataset->at(k)->size(); i++)
+            // Segmente
+            for (int j = 0; j < this->graphset->at(i)->getNumberOfSegments(); j++)
             {
-                for (int j = 0; j < this->dataset->at(k)->at(i)->size(); j++)
+                // Datensaetze
+                for (int k = 0; k < this->graphset->at(i)->getNumberOfDatasets(j); k++)
                 {
-                    fprintf(this->gnuplotInput, "%f\t", this->dataset->at(k)->at(i)->at(j));
-                    printf("%f\t", this->dataset->at(k)->at(i)->at(j));
+                    // Dimensionen
+                    if (datasetDim == 2)
+                    {
+                        fprintf(this->gnuplotInput, "%f\t", this->graphset->at(i)->getValue(j, k, 0));
+                        printf("%f\t", this->graphset->at(i)->getValue(j, k, 0));
+                        fprintf(this->gnuplotInput, "%f\t", this->graphset->at(i)->getValue(j, k, 1));
+                        printf("%f\t", this->graphset->at(i)->getValue(j, k, 1));
+                    }
+                    else if (datasetDim == 3)
+                    {
+                        fprintf(this->gnuplotInput, "%f\t", this->graphset->at(i)->getValue(j, k, 0));
+                        printf("%f\t", this->graphset->at(i)->getValue(j, k, 0));
+                        fprintf(this->gnuplotInput, "%f\t", this->graphset->at(i)->getValue(j, k, 1));
+                        printf("%f\t", this->graphset->at(i)->getValue(j, k, 1));
+                        fprintf(this->gnuplotInput, "%f\t", this->graphset->at(i)->getValue(j, k, 2));
+                        printf("%f\t", this->graphset->at(i)->getValue(j, k, 2));
+                    }
+                    fprintf(this->gnuplotInput, "\n");
+                    printf("\n");
                 }
                 fprintf(this->gnuplotInput, "\n");
                 printf("\n");
@@ -184,6 +206,7 @@ bool Gnuplot::sendMessage()
             fprintf(this->gnuplotInput, "e\n");
             printf("e\n");
         }
+
     }
 
     fflush(this->gnuplotInput);
@@ -284,8 +307,34 @@ int Gnuplot::getProcess()
 
 void Gnuplot::plot()
 {
-    state = SENDING;
-    this->timer->start(50);
+    if (state == READY)
+    {
+        state = SENDING;
+        this->timer->start(50);
+    }
+}
+
+void Gnuplot::plot(int hAngle, int vAngle)
+{
+    if (state == READY)
+    {
+        this->hAngle = hAngle;
+        this->vAngle = vAngle;
+
+        state = SENDING;
+        this->timer->start(50);
+    }
+}
+
+void Gnuplot::plot(double zoomLevel)
+{
+    if (state == READY)
+    {
+        this->zoomLevel = zoomLevel;
+
+        state = SENDING;
+        this->timer->start(50);
+    }
 }
 
 
@@ -347,21 +396,12 @@ void Gnuplot::setDatasetDim(int dim)
     }
 }
 
-void Gnuplot::addSet()
+void Gnuplot::addGraph(Graph* graph)
 {
-    vector<vector<double>*>* newSet = new vector<vector<double>*>();
-    this->dataset->push_back(newSet);
+    this->graphset->push_back(graph);
 }
 
-void Gnuplot::addDataset(int setNumber, double* data)
-{
-    vector<double>* newSet = new vector<double>();
-    for (int i = 0; i < this->datasetDim; i++)
-    {
-        newSet->push_back(data[i]);
-    }
-    this->dataset->at(setNumber)->push_back(newSet);
-}
+
 
 
 

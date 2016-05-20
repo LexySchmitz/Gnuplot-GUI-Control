@@ -5,6 +5,7 @@ Graph::Graph(int dim)
 {
     this->graph = new vector<vector<double*>*>();
     this->datasetDim = dim;
+    this->title = new QString("graph title");
 }
 
 void Graph::addSegment()

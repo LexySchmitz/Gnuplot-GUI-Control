@@ -455,7 +455,10 @@ void Gnuplot::addGraph(Graph* graph)
     this->graphset->push_back(graph);
 }
 
-
+void Gnuplot::clearGraphset()
+{
+    this->graphset->clear();
+}
 
 
 

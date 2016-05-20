@@ -94,6 +94,7 @@ public:
     void setDatasetMode(bool mode);
     void setDatasetDim(int dim);
     void addGraph(Graph* graph);
+    void clearGraphset();
 };
 
 #endif // GNUPLOT_H
